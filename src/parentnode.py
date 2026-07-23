@@ -28,7 +28,7 @@ class ParentNode(HTMLNode):
     
     def __repr__(self) -> str:
         return f"""
-        HTMLNode(tag: {self.tag} ,
+        ParentNode(tag: {self.tag} ,
         children: {self.children} , 
         props: {self.props}
         """

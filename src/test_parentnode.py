@@ -85,14 +85,14 @@ class TestParentNode(unittest.TestCase):
             })
 
         expected = """
-        HTMLNode(tag: div ,
+        ParentNode(tag: div ,
         children: [
         LeafNode(tag: None, value: span ,
         props: None
         ] , 
         props: {'id': 'abc', 'className': 'class'}
         """
-        print(repr(node))
+
         self.assertEqual(
             repr(node), expected
         )
