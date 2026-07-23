@@ -87,7 +87,7 @@ class TestMTMLNode(unittest.TestCase):
             "className": "class",
         })
 
-        expected = 'id="abc" className="class"'
+        expected = ' id="abc" className="class"'
 
         self.assertEqual(
             node.props_to_html(), expected
