@@ -95,12 +95,6 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
             node = TextNode("This is a link text node", TextType.IMAGE_TEXT, )
             text_node_to_html_node(node)
 
-    
-
-    
                         
-
-                        
-
 if __name__ == "__main__":
     unittest.main()
