@@ -73,3 +73,55 @@ def extract_markdown_images(text: str) -> list[tuple[str, str]]:
 def extract_markdown_links(text: str) -> list[tuple[str, str]]:
     matches = re.findall(r"\[(.*?)\]\((.*?\..*?)\)", text)
     return matches
+
+def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
+    new_nodes: list[TextNode] = []
+    
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.PLAIN_TEXT:
+            new_nodes.append(old_node)
+            continue
+
+        split_nodes: list[TextNode] = []
+        sections = re.split(r"!\[(.*?)\]\((.*?\..*?)\)", old_node.text)
+        
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+
+            if i % 3 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.PLAIN_TEXT))
+            elif i % 3 == 1:
+                continue
+            elif i % 3 == 2:
+                split_nodes.append(TextNode(sections[i-1], TextType.IMAGE_TEXT, sections[i]))
+
+        new_nodes.extend(split_nodes)
+
+    return new_nodes
+
+def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
+    new_nodes: list[TextNode] = []
+        
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.PLAIN_TEXT:
+            new_nodes.append(old_node)
+            continue
+
+        split_nodes: list[TextNode] = []
+        sections = re.split(r"\[(.*?)\]\((.*?\..*?)\)", old_node.text)
+        
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+
+            if i % 3 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.PLAIN_TEXT))
+            elif i % 3 == 1:
+                continue
+            elif i % 3 == 2:
+                split_nodes.append(TextNode(sections[i-1], TextType.LINK_TEXT, sections[i]))
+
+        new_nodes.extend(split_nodes)
+
+    return new_nodes

@@ -4,6 +4,8 @@ from inline_markdown import (
     split_nodes_delimiter,
     extract_markdown_images,
     extract_markdown_links,
+    split_nodes_image,
+    split_nodes_link
 )
 from textnode import TextNode, TextType
 
@@ -154,7 +156,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
 
     def test_extract_markdown_images_multiple(self):
             matches = extract_markdown_images(
-                "This is text with a ![example image](https://www.picsum.photos/536/354) and ![example image 2](https://picsum.photos/id/237/200/300)"
+                "This is text with an ![example image](https://www.picsum.photos/536/354) and ![example image 2](https://picsum.photos/id/237/200/300)"
             )
             self.assertListEqual([("example image", "https://www.picsum.photos/536/354"), ("example image 2", "https://picsum.photos/id/237/200/300")], matches)
 
@@ -166,10 +168,48 @@ class TestSplitNodesDelimiter(unittest.TestCase):
 
     def test_extract_markdown_link_multiple(self):
         matches = extract_markdown_links(
-            "This is text with a [example link](example.com) and [example link 2](https://www.example.com)"
+            "This is text with an [example link](example.com) and [example link 2](https://www.example.com)"
         )
         self.assertListEqual([("example link", "example.com"), ("example link 2", "https://www.example.com")], matches)
 
+
+    def test_split_nodes_image(self):
+        node = TextNode(
+        "This is text with an ![example image](https://www.picsum.photos/536/354) and another ![example image 2](https://picsum.photos/id/237/200/300)",
+        TextType.PLAIN_TEXT,
+    )
+        matches = split_nodes_image(
+            [node]
+        )
+
+        self.assertListEqual(
+        [
+            TextNode("This is text with an ", TextType.PLAIN_TEXT),
+            TextNode("example image", TextType.IMAGE_TEXT, "https://www.picsum.photos/536/354"),
+            TextNode(" and another ", TextType.PLAIN_TEXT),
+            TextNode("example image 2", TextType.IMAGE_TEXT, "https://picsum.photos/id/237/200/300"),
+        ],
+        matches,
+    )
+
+    def test_split_nodes_link(self):
+            node = TextNode(
+            "This is text with an [example link](example.com) and [example link 2](https://www.example.com)",
+            TextType.PLAIN_TEXT,
+        )
+            matches = split_nodes_link(
+                [node]
+            )
+    
+            self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.PLAIN_TEXT),
+                TextNode("example link", TextType.LINK_TEXT, "example.com"),
+                TextNode(" and ", TextType.PLAIN_TEXT),
+                TextNode("example link 2", TextType.LINK_TEXT, "https://www.example.com"),
+            ],
+            matches,
+        )
 
 if __name__ == "__main__":
     unittest.main()
