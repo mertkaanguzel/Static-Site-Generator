@@ -5,7 +5,8 @@ from inline_markdown import (
     extract_markdown_images,
     extract_markdown_links,
     split_nodes_image,
-    split_nodes_link
+    split_nodes_link,
+    text_to_textnodes
 )
 from textnode import TextNode, TextType
 
@@ -209,7 +210,38 @@ class TestSplitNodesDelimiter(unittest.TestCase):
                 TextNode("example link 2", TextType.LINK_TEXT, "https://www.example.com"),
             ],
             matches,
-        )
+            )
+
+    def test_text_to_textnodes(self):
+                text = "This is **text** with an _italic_ word and a `code block` and an ![image](https://www.picsum.photos/536/354) and a [link](https://www.example.com)"
+
+                matches = text_to_textnodes(text)
+        
+                self.assertListEqual(
+                [
+                    TextNode("This is ", TextType.PLAIN_TEXT),
+                    TextNode("text", TextType.BOLD_TEXT),
+                    TextNode(" with an ", TextType.PLAIN_TEXT),
+                    TextNode("italic", TextType.ITALIC_TEXT),
+                    TextNode(" word and a ", TextType.PLAIN_TEXT),
+                    TextNode("code block", TextType.CODE_TEXT),
+                    TextNode(" and an ", TextType.PLAIN_TEXT),
+                    TextNode("image", TextType.IMAGE_TEXT, "https://www.picsum.photos/536/354"),
+                    TextNode(" and a ", TextType.PLAIN_TEXT),
+                    TextNode("link", TextType.LINK_TEXT, "https://www.example.com"),
+                ],
+                matches,
+                )
+
+    def test_text_to_textnodes_plain_text(self):
+                    text = "This is a plain text."
+    
+                    matches = text_to_textnodes(text)
+            
+                    self.assertListEqual(
+                    [TextNode("This is a plain text.", TextType.PLAIN_TEXT)],
+                    matches,
+                    )
 
 if __name__ == "__main__":
     unittest.main()
