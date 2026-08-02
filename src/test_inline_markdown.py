@@ -11,7 +11,7 @@ from inline_markdown import (
 from textnode import TextNode, TextType
 
 
-class TestSplitNodesDelimiter(unittest.TestCase):
+class TestInlineMarkdown(unittest.TestCase):
     def test_delim_PLAIN_TEXT_ONLY(self):
         node = TextNode("This is an only plain text", TextType.PLAIN_TEXT)
         new_nodes = split_nodes_delimiter([node], "`", TextType.CODE_TEXT)
@@ -178,7 +178,7 @@ class TestSplitNodesDelimiter(unittest.TestCase):
         node = TextNode(
         "This is text with an ![example image](https://www.picsum.photos/536/354) and another ![example image 2](https://picsum.photos/id/237/200/300)",
         TextType.PLAIN_TEXT,
-    )
+        )
         matches = split_nodes_image(
             [node]
         )
@@ -194,54 +194,54 @@ class TestSplitNodesDelimiter(unittest.TestCase):
     )
 
     def test_split_nodes_link(self):
-            node = TextNode(
-            "This is text with an [example link](example.com) and [example link 2](https://www.example.com)",
-            TextType.PLAIN_TEXT,
+        node = TextNode(
+        "This is text with an [example link](example.com) and [example link 2](https://www.example.com)",
+        TextType.PLAIN_TEXT,
         )
-            matches = split_nodes_link(
-                [node]
-            )
-    
-            self.assertListEqual(
-            [
-                TextNode("This is text with an ", TextType.PLAIN_TEXT),
-                TextNode("example link", TextType.LINK_TEXT, "example.com"),
-                TextNode(" and ", TextType.PLAIN_TEXT),
-                TextNode("example link 2", TextType.LINK_TEXT, "https://www.example.com"),
-            ],
-            matches,
-            )
+        matches = split_nodes_link(
+            [node]
+        )
+
+        self.assertListEqual(
+        [
+            TextNode("This is text with an ", TextType.PLAIN_TEXT),
+            TextNode("example link", TextType.LINK_TEXT, "example.com"),
+            TextNode(" and ", TextType.PLAIN_TEXT),
+            TextNode("example link 2", TextType.LINK_TEXT, "https://www.example.com"),
+        ],
+        matches,
+        )
 
     def test_text_to_textnodes(self):
-                text = "This is **text** with an _italic_ word and a `code block` and an ![image](https://www.picsum.photos/536/354) and a [link](https://www.example.com)"
+        text = "This is **text** with an _italic_ word and a `code block` and an ![image](https://www.picsum.photos/536/354) and a [link](https://www.example.com)"
 
-                matches = text_to_textnodes(text)
-        
-                self.assertListEqual(
-                [
-                    TextNode("This is ", TextType.PLAIN_TEXT),
-                    TextNode("text", TextType.BOLD_TEXT),
-                    TextNode(" with an ", TextType.PLAIN_TEXT),
-                    TextNode("italic", TextType.ITALIC_TEXT),
-                    TextNode(" word and a ", TextType.PLAIN_TEXT),
-                    TextNode("code block", TextType.CODE_TEXT),
-                    TextNode(" and an ", TextType.PLAIN_TEXT),
-                    TextNode("image", TextType.IMAGE_TEXT, "https://www.picsum.photos/536/354"),
-                    TextNode(" and a ", TextType.PLAIN_TEXT),
-                    TextNode("link", TextType.LINK_TEXT, "https://www.example.com"),
-                ],
-                matches,
-                )
+        matches = text_to_textnodes(text)
+
+        self.assertListEqual(
+        [
+            TextNode("This is ", TextType.PLAIN_TEXT),
+            TextNode("text", TextType.BOLD_TEXT),
+            TextNode(" with an ", TextType.PLAIN_TEXT),
+            TextNode("italic", TextType.ITALIC_TEXT),
+            TextNode(" word and a ", TextType.PLAIN_TEXT),
+            TextNode("code block", TextType.CODE_TEXT),
+            TextNode(" and an ", TextType.PLAIN_TEXT),
+            TextNode("image", TextType.IMAGE_TEXT, "https://www.picsum.photos/536/354"),
+            TextNode(" and a ", TextType.PLAIN_TEXT),
+            TextNode("link", TextType.LINK_TEXT, "https://www.example.com"),
+        ],
+        matches,
+        )
 
     def test_text_to_textnodes_plain_text(self):
-                    text = "This is a plain text."
-    
-                    matches = text_to_textnodes(text)
-            
-                    self.assertListEqual(
-                    [TextNode("This is a plain text.", TextType.PLAIN_TEXT)],
-                    matches,
-                    )
+        text = "This is a plain text."
+
+        matches = text_to_textnodes(text)
+
+        self.assertListEqual(
+        [TextNode("This is a plain text.", TextType.PLAIN_TEXT)],
+        matches,
+        )
 
 if __name__ == "__main__":
     unittest.main()
